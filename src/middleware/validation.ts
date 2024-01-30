@@ -8,12 +8,7 @@ export const createContentValidation = (req: Request, res: Response, next: NextF
     description: Joi.string().required().max(50).empty('')
   })
 
-  const data = {
-    title: req.body.title,
-    description: req.body.description
-  }
-
-  const { error } = schema.validate(data)
+  const { error } = schema.validate(req.body)
   if (error) {
     let message: string = ''
     switch (error.details[0].type) {

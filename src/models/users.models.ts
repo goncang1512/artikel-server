@@ -14,6 +14,15 @@ const usersSchema = new mongoose.Schema(
     },
     password: {
       type: String
+    },
+    imgProfil: {
+      type: String
+    },
+    profilUrl: {
+      type: String
+    },
+    refreshToken: {
+      type: String
     }
   },
   {

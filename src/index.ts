@@ -5,8 +5,8 @@ import { logger } from './utils/logger'
 import bodyParser from 'body-parser'
 import FileUpload from 'express-fileupload'
 import cors from 'cors'
-// import Users from './models/user.model'
 import db from './config/db.config'
+import cookieParser from 'cookie-parser'
 
 // connect db mongodb
 import './utils/connectDB'
@@ -19,13 +19,21 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 // cors access handler
-app.use(cors())
+app.use(
+  cors({
+    credentials: true
+  })
+)
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', '*')
   res.setHeader('Access-Control-Allow-Headers', '*')
   next()
 })
+
+// cookie parser
+app.use(cookieParser())
 
 // file upload express
 app.use(FileUpload())

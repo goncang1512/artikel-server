@@ -5,7 +5,10 @@ interface UserType {
   username: string
   email: string
   password: string | null | undefined
-  confPassword?: string
+  user_id?: string
+  refreshToken: string | null
+  imgProfil: string | undefined
+  profilUrl: string
 }
 
 export const getUser = async () => {
@@ -44,4 +47,8 @@ export const patchAccount = async (id: string, payload: UserType) => {
 
 export const deleteAccount = async (id: string) => {
   return await UserModel.findOneAndDelete({ _id: id })
+}
+
+export const getUserImg = async (_id: string) => {
+  return await UserModel.findById({ _id })
 }
