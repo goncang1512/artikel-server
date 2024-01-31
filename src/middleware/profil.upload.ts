@@ -36,7 +36,6 @@ export const uploadImgProfil = (req: CustomRequest, res: Response, next: NextFun
 export const updateUserImg = async (req: CustomRequest, res: Response, next: NextFunction) => {
   const { id: _id } = req.params
   const user: any = await getUserImg(_id)
-  console.log('User:', user.imgProfil)
   let fileName: string
   if (req.files === null) {
     fileName = user.imgProfil

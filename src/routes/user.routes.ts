@@ -1,9 +1,11 @@
-import { Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { logger } from '../utils/logger'
 import { getUserAll, getDetailUser, createAccount, updateUser, deleteUser } from '../controller/user.controller'
 import { createUserValidation, updateValidateUser } from '../middleware/validation'
 import { checkUser, chekcUpdateUser } from '../middleware/user.check'
 import { uploadImgProfil, updateUserImg } from '../middleware/profil.upload'
+import { getUserImg } from '../services/user.services'
+import PosterModel from '../models/content.models'
 
 export const UserRouter: Router = Router()
 
@@ -25,4 +27,12 @@ UserRouter.patch('/users/:id', updateValidateUser, chekcUpdateUser, updateUserIm
 
 UserRouter.delete('/users/:id', deleteUser, () => {
   logger.info('Success deleted user data')
+})
+
+UserRouter.get('/my/:id', async (req: Request, res: Response, next: NextFunction) => {
+  const user = await getUserImg(req.params.id)
+
+  const contents: any = await PosterModel.find({ user_id: user?._id })
+
+  res.json({ contents })
 })

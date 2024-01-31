@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
-import { getUser, getUserById, postAccount, patchAccount, deleteAccount } from '../services/user.services'
+import { getUser, getUserById, postAccount, patchAccount, deleteAccount, getUserImg } from '../services/user.services'
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
 import UserModel from '../models/users.models'
+import fs from 'fs'
+import PosterModel from '../models/content.models'
 
 interface PostUser {
   username: string
@@ -99,14 +101,30 @@ export const updateUser = async (req: CustomRequest, res: Response, next: NextFu
 }
 
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-  const id: string = req.params.id
+  const _id: string = req.params.id
 
   try {
-    const result = await deleteAccount(id)
+    const user = await getUserImg(_id)
+
+    const contents: any = await PosterModel.find({ user_id: user?._id })
+    for (const content of contents) {
+      const filepath = `./public/poster/${content.imgPoster}`
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+    }
+
+    await PosterModel.deleteMany({ user_id: user?._id })
+
+    const filepath = `./public/profil/${user?.imgProfil}`
+    if (fs.existsSync(filepath)) {
+      fs.unlinkSync(filepath)
+    }
+    const result = await deleteAccount(_id)
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success delete user', result })
     next()
   } catch (error) {
-    res.status(500).json({ status: false, statusCode: 500, message: 'Failed delete user' })
+    res.status(500).json({ status: false, statusCode: 500, message: 'Failed delete user', Error: error })
   }
 }

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { postLogin, updateLogin, tokenRefresh, deleteToken } from '../services/auth.services'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { logger } from '../utils/logger'
+import UserModel from '../models/users.models'
 
 interface AuthType {
   email: string
@@ -12,7 +12,7 @@ interface AuthType {
 export const loginAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email: myemail, password: mypassword }: AuthType = req.body
-    const user: any = await postLogin(myemail)
+    const user: any = await UserModel.find({ email: myemail })
     if (!user) {
       return res.status(400).json({ message: 'User not found' })
     }
@@ -32,7 +32,7 @@ export const loginAuth = async (req: Request, res: Response, next: NextFunction)
       expiresIn: '30d'
     })
 
-    await updateLogin(refreshToken, _id)
+    await UserModel.findOneAndUpdate({ _id }, { $set: { refreshToken } })
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
@@ -53,10 +53,10 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
     const refreshToken = req.cookies.refreshToken
     if (!refreshToken) return res.sendStatus(401)
 
-    const user = await tokenRefresh(refreshToken)
+    const user = await UserModel.find({ refreshToken })
     if (!user[0]) return res.sendStatus(403)
 
-    jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN_SECRET}`, (err: any, decoded: any) => {
+    jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN_SECRET}`, (err: any, _decoded: any) => {
       if (err) return res.sendStatus(403)
       const _id = user[0]._id
       const user_id = user[0].user_id
@@ -81,12 +81,12 @@ export const logoutAuth = async (req: Request, res: Response, next: NextFunction
   try {
     const { refreshToken } = req.cookies
     if (!refreshToken) return res.sendStatus(204)
-    const user = await tokenRefresh(refreshToken)
+    const user = await UserModel.find({ refreshToken })
     if (!user[0]) return res.sendStatus(403)
 
     const _id = user[0]._id
 
-    await deleteToken(String(_id))
+    await UserModel.findOneAndUpdate({ _id }, { $set: { refreshToken: null } })
     res.clearCookie('refreshToken')
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Berhasil logout' })

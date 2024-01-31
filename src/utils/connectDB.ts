@@ -3,12 +3,12 @@ import { logger } from './logger'
 import config from '../config/environtment'
 
 mongoose
-  .connect(`${config.db}/${config.name}`)
-  .then(() => {
-    logger.info('Connected to MongoDB')
+  .connect(`${config.dbOnline}`, {
+    dbName: `${config.name}`
   })
-  .catch((error) => {
-    logger.info('Could not connect to MongoDB')
-    logger.error(error)
-    process.exit(1)
+  .then(() => {
+    logger.info('Success connect to mongodb')
+  })
+  .catch((err) => {
+    console.log(err)
   })

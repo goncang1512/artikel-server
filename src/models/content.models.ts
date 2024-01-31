@@ -18,6 +18,9 @@ const posterSchema = new mongoose.Schema(
     posterUrl: {
       type: String
     },
+    user_id: {
+      type: String
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users'

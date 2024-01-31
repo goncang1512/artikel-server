@@ -5,7 +5,7 @@ import { loginAuth, refreshToken, logoutAuth } from '../controller/auth.controll
 export const AuthRouter: Router = Router()
 
 AuthRouter.post('/login', loginAuth, () => {
-  logger.info('Success login ')
+  logger.info('Success login account')
 })
 
 AuthRouter.get('/token', refreshToken, () => {

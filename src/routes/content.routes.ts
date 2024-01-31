@@ -1,8 +1,14 @@
 import { Router } from 'express'
 import { logger } from '../utils/logger'
-import { uplaodContent, getContentUser } from '../controller/content.controller'
+import {
+  uplaodContent,
+  getContentUser,
+  updateContent,
+  deleteContent,
+  getContentQuery
+} from '../controller/content.controller'
 import { createContentValidation } from '../middleware/validation'
-import { uploadImgContent } from '../middleware/content.upload'
+import { updatePoster, uploadImgContent } from '../middleware/content.upload'
 
 export const ContentRouter: Router = Router()
 
@@ -12,4 +18,16 @@ ContentRouter.get('/content', getContentUser, () => {
 
 ContentRouter.post('/content/:id', createContentValidation, uploadImgContent, uplaodContent, () => {
   logger.info('Success add new content')
+})
+
+ContentRouter.patch('/content/:id', updatePoster, updateContent, () => {
+  logger.info('Success update content')
+})
+
+ContentRouter.delete('/content/:id', deleteContent, () => {
+  logger.info('Success deleted content')
+})
+
+ContentRouter.get('/content/search', getContentQuery, () => {
+  logger.info('Success get content by query')
 })
