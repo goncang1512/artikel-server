@@ -2,7 +2,8 @@ import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import { UploadedFile } from 'express-fileupload'
 import { NextFunction, Request, Response } from 'express'
-import { ContentType, findContent } from '../services/content.services'
+import { findContent } from '../services/content.services'
+import { ContentType } from '../utils/DataTypes.type'
 import fs from 'fs'
 
 interface CustomRequest extends Request {

@@ -1,17 +1,6 @@
 import { ParsedQs } from 'qs'
 import PosterModel from '../models/content.models'
-
-export interface ContentType {
-  content_id?: string
-  title: string
-  description: string | null | undefined
-  imgPoster: string | undefined
-  posterUrl: string
-  user_id?: string
-  user?: string
-  cretedAt?: Date
-  updatedAt?: Date
-}
+import { ContentType } from '../utils/DataTypes.type'
 
 export const postContent = async (payload: ContentType) => {
   try {

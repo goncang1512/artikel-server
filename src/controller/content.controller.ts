@@ -3,13 +3,13 @@ import {
   postContent,
   getContent,
   patchContent,
-  ContentType,
   destroyContent,
   findContent,
   searchContent
 } from '../services/content.services'
 import { v4 as uuidv4 } from 'uuid'
 import fs from 'fs'
+import { ContentType } from '../utils/DataTypes.type'
 
 interface CustomRequest extends Request {
   filename?: string

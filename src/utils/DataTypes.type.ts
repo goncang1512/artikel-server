@@ -20,3 +20,19 @@ export interface UpdateUser {
   confPassword: string
   imgProfil: any
 }
+
+export interface ContentType {
+  content_id?: string
+  title: string
+  description: string | null | undefined
+  imgPoster: string | undefined
+  posterUrl: string
+  user_id?: string
+  user?: string
+  cretedAt?: Date
+  updatedAt?: Date
+}
+
+export interface CustomRequest extends Request {
+  filename?: string
+}
