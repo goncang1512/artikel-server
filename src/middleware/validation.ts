@@ -75,7 +75,8 @@ export const createUserValidation = (req: Request, res: Response, next: NextFunc
     username: Joi.string().max(15).required().empty(''),
     email: Joi.string().required().empty(''),
     password: Joi.string().required().empty(''),
-    confPassword: Joi.string().required().empty('')
+    confPassword: Joi.string().required().empty(''),
+    imgProfil: Joi.allow()
   })
 
   const { error } = schema.validate(req.body)
@@ -108,7 +109,7 @@ export const updateValidateUser = (req: Request, res: Response, next: NextFuncti
     email: Joi.string().required().empty(''),
     password: Joi.string().allow().empty(''),
     confPassword: Joi.string().allow().empty(''),
-    imgProfl: Joi.allow()
+    imgProfil: Joi.allow()
   })
 
   const { error } = schema.validate(req.body)
