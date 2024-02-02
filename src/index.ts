@@ -24,6 +24,8 @@ app.use('/public', express.static(resolve('public')))
 // cors access handler
 app.use(
   cors({
+    origin: /^https:\/\//,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
   })
 )
