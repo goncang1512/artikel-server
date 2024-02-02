@@ -7,7 +7,7 @@ import {
   deleteContent,
   getContentQuery
 } from '../controller/content.controller'
-import { createContentValidation } from '../middleware/validation'
+import { createContentValidation, updateContentValidation } from '../middleware/validation'
 import { updatePoster, uploadImgContent } from '../middleware/content.upload'
 
 export const ContentRouter: Router = Router()
@@ -20,7 +20,7 @@ ContentRouter.post('/content/:id', createContentValidation, uploadImgContent, up
   logger.info('Success add new content')
 })
 
-ContentRouter.patch('/content/:id', updatePoster, updateContent, () => {
+ContentRouter.patch('/content/:id', updateContentValidation, updatePoster, updateContent, () => {
   logger.info('Success update content')
 })
 

@@ -3,21 +3,18 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { logger } from '../utils/logger'
 import UserModel from '../models/users.models'
-
-interface AuthType {
-  email: string
-  password: string
-}
+import { loginValidation } from '../middleware/validation'
+import { LoginType, JWTType } from '../utils/DataTypes.type'
 
 export const loginAuth = async (req: Request, res: Response, next: NextFunction) => {
+  const result: LoginType = loginValidation(req.body)
   try {
-    const { email: myemail, password: mypassword }: AuthType = req.body
-    const user: any = await UserModel.find({ email: myemail })
+    const user: JWTType[] = await UserModel.find({ email: result.email })
     if (!user) {
-      return res.status(400).json({ message: 'User not found' })
+      return res.status(422).json({ status: false, statusCode: 422, message: 'User tidak di temukan' })
     }
 
-    const match = await bcrypt.compare(mypassword, user[0].password)
+    const match = await bcrypt.compare(result.password, user[0].password)
     if (!match) return res.status(400).json({ message: 'Password Salah' })
     const _id = user[0]._id
     const user_id = user[0].user_id
@@ -41,10 +38,17 @@ export const loginAuth = async (req: Request, res: Response, next: NextFunction)
       sameSite: 'none'
     })
 
-    res.status(201).json({ status: true, statusCode: 201, message: 'Success login', accessToken })
+    res.status(200).json({ status: true, statusCode: 200, message: 'Success login', accessToken })
     next()
   } catch (error) {
-    res.status(500).json({ status: false, statusCode: 500, message: 'Failed login' })
+    let pesan: string
+    if (result.from === 'Joi') {
+      pesan = result.message
+    } else {
+      pesan = 'User tidak di temukan'
+    }
+    logger.error(`Gagal login = ${pesan}`)
+    res.status(400).json({ status: false, statusCode: 400, message: pesan })
   }
 }
 
