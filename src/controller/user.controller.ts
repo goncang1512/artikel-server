@@ -46,7 +46,7 @@ export const getDetailUser = async (req: Request, res: Response, next: NextFunct
 export const createAccount = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {
     const { username, email, password }: PostUser = req.body
-    const fileName = req.filename
+    const fileName = undefined
     const urlProfil = `${req.protocol}://${req.get('host')}/public/profil/${fileName}`
     const user_id = uuidv4()
     const hashedPassword = await bcrypt.hash(password, 10)
