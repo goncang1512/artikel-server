@@ -13,7 +13,7 @@ import http from 'http'
 import './utils/connectDB'
 
 const app: Application = express()
-const port = process.env.SERVER_PORT_LISTEN ?? 3000
+const port = process.env.SERVER_PORT_LISTEN ?? 4000
 dotenv.config()
 
 // parse body request
