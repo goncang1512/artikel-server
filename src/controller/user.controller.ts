@@ -117,9 +117,10 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     await PosterModel.deleteMany({ user_id: user?._id })
 
     const filepath = `./public/profil/${user?.imgProfil}`
-    if (fs.existsSync(filepath) || user?.imgProfil !== 'default-fotoprofil.png') {
+    if (fs.existsSync(filepath) || filepath !== './public/profil/default-fotoprofil.png') {
       fs.unlinkSync(filepath)
     }
+
     const result = await deleteAccount(_id)
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success delete user', result })
