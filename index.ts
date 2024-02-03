@@ -1,7 +1,7 @@
 import express, { Application } from 'express'
 import dotenv from 'dotenv'
-import { routes } from './routes/index.routes'
-import { logger } from './utils/logger'
+import { routes } from './src/routes/index.routes'
+import { logger } from './src/utils/logger'
 import bodyParser from 'body-parser'
 import FileUpload from 'express-fileupload'
 import cors from 'cors'
@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser'
 import { resolve } from 'path'
 
 // connect db mongodb
-import './utils/connectDB'
+import './src/utils/connectDB'
 
 const app: Application = express()
 const port = process.env.SERVER_PORT_LISTEN ?? 5500
