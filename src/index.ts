@@ -13,6 +13,7 @@ import http from 'http'
 import './utils/connectDB'
 
 const app: Application = express()
+const port = process.env.SERVER_PORT_LISTEN ?? 3000
 dotenv.config()
 
 // parse body request
@@ -40,6 +41,6 @@ app.use(FileUpload())
 routes(app)
 
 const server = http.createServer(app)
-server.listen(process.env.SERVER_PORT_LISTEN, () => {
-  logger.info(`Server berjalan di port ${process.env.SERVER_PORT_LISTEN}`)
+server.listen(port, () => {
+  logger.info(`Server berjalan di port ${port}`)
 })
