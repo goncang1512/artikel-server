@@ -7,6 +7,7 @@ import FileUpload from 'express-fileupload'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { resolve } from 'path'
+import http from 'http'
 
 // connect db mongodb
 import './utils/connectDB'
@@ -45,6 +46,7 @@ app.use(FileUpload())
 
 routes(app)
 
-app.listen(process.env.SERVER_PORT_LISTEN, () => {
+const server = http.createServer(app)
+server.listen(process.env.SERVER_PORT_LISTEN, () => {
   logger.info(`Server berjalan di port ${process.env.SERVER_PORT_LISTEN}`)
 })
