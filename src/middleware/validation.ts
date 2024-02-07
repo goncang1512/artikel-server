@@ -5,8 +5,9 @@ import { LoginType } from '../utils/DataTypes.type'
 
 export const createContentValidation = (req: Request, res: Response, next: NextFunction) => {
   const schema = Joi.object({
-    title: Joi.string().required().max(50).empty(''),
-    description: Joi.string().required().max(50).empty('')
+    tittle: Joi.string().required().max(50).empty(''),
+    description: Joi.string().required().empty(''),
+    imgContent: Joi.allow()
   })
 
   const { error } = schema.validate(req.body)
@@ -24,7 +25,7 @@ export const createContentValidation = (req: Request, res: Response, next: NextF
         break
     }
 
-    logger.error(`ERR: content - create = ${error.details[0].message}`)
+    logger.error(`ERR: content - create = ${message}`)
     return res.status(422).json({
       status: false,
       statusCode: 422,
@@ -38,9 +39,9 @@ export const createContentValidation = (req: Request, res: Response, next: NextF
 
 export const updateContentValidation = (req: Request, res: Response, next: NextFunction) => {
   const schema = Joi.object({
-    title: Joi.string().required().max(50).empty(''),
-    description: Joi.string().required().max(50).empty(''),
-    imgPoster: Joi.allow()
+    tittle: Joi.string().required().max(50).empty(''),
+    description: Joi.string().required().empty(''),
+    imgContent: Joi.allow()
   })
 
   const { error } = schema.validate(req.body)

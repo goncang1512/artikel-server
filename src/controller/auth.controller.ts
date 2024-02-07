@@ -34,8 +34,7 @@ export const loginAuth = async (req: Request, res: Response, next: NextFunction)
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: true,
-      sameSite: 'none'
+      secure: true
     })
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success login', accessToken })
@@ -57,7 +56,7 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
     const refreshToken = req.cookies.refreshToken
     if (!refreshToken) return res.sendStatus(401)
 
-    const user = await UserModel.find({ refreshToken })
+    const user: any = await UserModel.find({ refreshToken })
     if (!user[0]) return res.sendStatus(403)
 
     jwt.verify(refreshToken, `${process.env.REFRESH_TOKEN_SECRET}`, (err: any, _decoded: any) => {
@@ -66,10 +65,16 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
       const user_id = user[0].user_id
       const username = user[0].username
       const email = user[0].email
+      const imgProfil = user[0].imgProfil
+      const createdAt = user[0].createdAt
 
-      const accessToken = jwt.sign({ _id, user_id, username, email }, `${process.env.ACCESS_TOKEN_SECRET}`, {
-        expiresIn: '15s'
-      })
+      const accessToken = jwt.sign(
+        { _id, user_id, username, email, imgProfil, createdAt },
+        `${process.env.ACCESS_TOKEN_SECRET}`,
+        {
+          expiresIn: '15s'
+        }
+      )
 
       res.status(200).json({ status: true, statusCode: 200, message: 'Berhasil refresh token', accessToken })
 

@@ -3,8 +3,7 @@ import { getUser, getUserById, postAccount, patchAccount, deleteAccount, getUser
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
 import UserModel from '../models/users.models'
-import fs from 'fs'
-import PosterModel from '../models/content.models'
+import cloudinary from '../utils/cloudinary'
 
 interface PostUser {
   username: string
@@ -12,12 +11,15 @@ interface PostUser {
   password: string
   user_id: string
   refreshToken: string | null
-  imgProfil: string | undefined
-  profilUrl: string
+  imgProfil: {
+    public_id: string
+    urlProfil: string
+  }
 }
 
 interface CustomRequest extends Request {
   filename?: string
+  cloudFile?: any
 }
 
 export const getUserAll = async (req: Request, res: Response, next: NextFunction) => {
@@ -46,8 +48,9 @@ export const getDetailUser = async (req: Request, res: Response, next: NextFunct
 export const createAccount = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {
     const { username, email, password }: PostUser = req.body
-    const fileName = 'default-fotoprofil.png'
-    const urlProfil = `${req.protocol}://${req.get('host')}/public/profil/${fileName}`
+    const fileCloud = req.cloudFile
+    const urlProfil = fileCloud.secure_url
+    const fileName = fileCloud.public_id
     const user_id = uuidv4()
     const hashedPassword = await bcrypt.hash(password, 10)
     const data: PostUser = {
@@ -56,8 +59,10 @@ export const createAccount = async (req: CustomRequest, res: Response, next: Nex
       email,
       password: hashedPassword,
       refreshToken: null,
-      imgProfil: fileName,
-      profilUrl: urlProfil
+      imgProfil: {
+        public_id: fileName,
+        urlProfil
+      }
     }
     const result = await postAccount(data)
 
@@ -72,8 +77,9 @@ export const updateUser = async (req: CustomRequest, res: Response, next: NextFu
   const { id } = req.params
   const { username, email, password }: PostUser = req.body
   const user = await UserModel.findById(id)
-  const fileName = req.filename
-  const urlProfil = `${req.protocol}://${req.get('host')}/public/profil/${fileName}`
+  const fileCloud = req.cloudFile
+  const fileName = fileCloud.public_id
+  const urlProfil = fileCloud.secure_url
 
   let newPassword: string | null | undefined
   if (password === undefined || password === null || password === '') {
@@ -88,9 +94,10 @@ export const updateUser = async (req: CustomRequest, res: Response, next: NextFu
       username,
       email,
       password: newPassword,
-      imgProfil: fileName,
-      profilUrl: urlProfil,
-      refreshToken: null
+      imgProfil: {
+        public_id: fileName,
+        urlProfil
+      }
     })
 
     res.status(201).json({ status: true, statusCode: 201, message: 'Success updated user', result })
@@ -106,20 +113,8 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
   try {
     const user = await getUserImg(_id)
 
-    const contents: any = await PosterModel.find({ user_id: user?._id })
-    for (const content of contents) {
-      const filepath = `./public/poster/${content.imgPoster}`
-      if (fs.existsSync(filepath)) {
-        fs.unlinkSync(filepath)
-      }
-    }
-
-    await PosterModel.deleteMany({ user_id: user?._id })
-
-    const filepath = `./public/profil/${user?.imgProfil}`
-    if (fs.existsSync(filepath) && filepath !== './public/profil/default-fotoprofil.png') {
-      fs.unlinkSync(filepath)
-    }
+    const imgId: any = user?.imgProfil?.public_id
+    await cloudinary.uploader.destroy(imgId)
 
     const result = await deleteAccount(_id)
 

@@ -16,10 +16,8 @@ const usersSchema = new mongoose.Schema(
       type: String
     },
     imgProfil: {
-      type: String
-    },
-    profilUrl: {
-      type: String
+      public_id: { type: String },
+      urlProfil: { type: String }
     },
     refreshToken: {
       type: String

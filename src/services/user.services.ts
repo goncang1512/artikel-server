@@ -4,16 +4,18 @@ import UserModel from '../models/users.models'
 interface UserType {
   username: string
   email: string
-  password: string | null | undefined
+  password?: any
   user_id?: string
-  refreshToken: string | null
-  imgProfil: string | undefined
-  profilUrl: string
+  refreshToken?: string | null
+  imgProfil: {
+    public_id: any
+    urlProfil: string
+  }
 }
 
 export const getUser = async () => {
   try {
-    return await UserModel.find({}, 'user_id username email imgProfil profilUrl createdAt')
+    return await UserModel.find({}, 'user_id username email imgProfil profilUrl refreshToken createdAt')
   } catch (error) {
     logger.info('cannot get data from db')
     return error
@@ -22,7 +24,7 @@ export const getUser = async () => {
 
 export const getUserById = async (id: string) => {
   try {
-    return await UserModel.findById(id, 'user_id username email imgProfil profilUrl createdAt')
+    return await UserModel.findById(id, 'user_id username email imgProfil profilUrl refreshToken createdAt')
   } catch (error) {
     return error
   }

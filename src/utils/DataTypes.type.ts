@@ -23,10 +23,12 @@ export interface UpdateUser {
 
 export interface ContentType {
   content_id?: string
-  title: string
+  tittle: string
   description: string | null | undefined
-  imgPoster: string | undefined
-  posterUrl: string
+  imgContent: {
+    public_id: string
+    urlContent: string
+  }
   user_id?: string
   user?: string
   cretedAt?: Date
