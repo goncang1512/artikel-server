@@ -25,7 +25,7 @@ app.use('/public', express.static(resolve('public')))
 // cors access handler
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: [`${process.env.URL_ACCESS_API}`],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
   })
