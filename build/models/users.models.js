@@ -19,10 +19,8 @@ const usersSchema = new mongoose_1.default.Schema({
         type: String
     },
     imgProfil: {
-        type: String
-    },
-    profilUrl: {
-        type: String
+        public_id: { type: String },
+        urlProfil: { type: String }
     },
     refreshToken: {
         type: String

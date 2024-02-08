@@ -9,17 +9,15 @@ const posterSchema = new mongoose_1.default.Schema({
         type: String,
         unique: true
     },
-    title: {
+    tittle: {
         type: String
     },
     description: {
         type: String
     },
-    imgPoster: {
-        type: String
-    },
-    posterUrl: {
-        type: String
+    imgContent: {
+        public_id: { type: String },
+        urlContent: { type: String }
     },
     user_id: {
         type: String

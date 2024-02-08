@@ -17,7 +17,7 @@ const logger_1 = require("../utils/logger");
 const users_models_1 = __importDefault(require("../models/users.models"));
 const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return yield users_models_1.default.find({}, 'user_id username email imgProfil profilUrl createdAt');
+        return yield users_models_1.default.find({}, 'user_id username email imgProfil profilUrl refreshToken createdAt');
     }
     catch (error) {
         logger_1.logger.info('cannot get data from db');
@@ -27,7 +27,7 @@ const getUser = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUser = getUser;
 const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return yield users_models_1.default.findById(id, 'user_id username email imgProfil profilUrl createdAt');
+        return yield users_models_1.default.findById(id, 'user_id username email imgProfil profilUrl refreshToken createdAt');
     }
     catch (error) {
         return error;

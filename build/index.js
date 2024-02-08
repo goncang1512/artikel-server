@@ -25,7 +25,7 @@ app.use(body_parser_1.default.json());
 app.use('/public', express_1.default.static((0, path_1.resolve)('public')));
 // cors access handler
 app.use((0, cors_1.default)({
-    origin: /^https:\/\//,
+    origin: 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }));

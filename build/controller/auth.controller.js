@@ -42,8 +42,7 @@ const loginAuth = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             maxAge: 24 * 60 * 60 * 1000,
-            secure: true,
-            sameSite: 'none'
+            secure: true
         });
         res.status(200).json({ status: true, statusCode: 200, message: 'Success login', accessToken });
         next();
@@ -76,7 +75,9 @@ const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             const user_id = user[0].user_id;
             const username = user[0].username;
             const email = user[0].email;
-            const accessToken = jsonwebtoken_1.default.sign({ _id, user_id, username, email }, `${process.env.ACCESS_TOKEN_SECRET}`, {
+            const imgProfil = user[0].imgProfil;
+            const createdAt = user[0].createdAt;
+            const accessToken = jsonwebtoken_1.default.sign({ _id, user_id, username, email, imgProfil, createdAt }, `${process.env.ACCESS_TOKEN_SECRET}`, {
                 expiresIn: '15s'
             });
             res.status(200).json({ status: true, statusCode: 200, message: 'Berhasil refresh token', accessToken });

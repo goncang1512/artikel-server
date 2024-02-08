@@ -8,8 +8,9 @@ const joi_1 = __importDefault(require("joi"));
 const logger_1 = require("../utils/logger");
 const createContentValidation = (req, res, next) => {
     const schema = joi_1.default.object({
-        title: joi_1.default.string().required().max(50).empty(''),
-        description: joi_1.default.string().required().max(50).empty('')
+        tittle: joi_1.default.string().required().max(50).empty(''),
+        description: joi_1.default.string().required().empty(''),
+        imgContent: joi_1.default.allow()
     });
     const { error } = schema.validate(req.body);
     if (error) {
@@ -25,7 +26,7 @@ const createContentValidation = (req, res, next) => {
                 message = 'Umur harus menggunakan angka';
                 break;
         }
-        logger_1.logger.error(`ERR: content - create = ${error.details[0].message}`);
+        logger_1.logger.error(`ERR: content - create = ${message}`);
         return res.status(422).json({
             status: false,
             statusCode: 422,
@@ -38,9 +39,9 @@ const createContentValidation = (req, res, next) => {
 exports.createContentValidation = createContentValidation;
 const updateContentValidation = (req, res, next) => {
     const schema = joi_1.default.object({
-        title: joi_1.default.string().required().max(50).empty(''),
-        description: joi_1.default.string().required().max(50).empty(''),
-        imgPoster: joi_1.default.allow()
+        tittle: joi_1.default.string().required().max(50).empty(''),
+        description: joi_1.default.string().required().empty(''),
+        imgContent: joi_1.default.allow()
     });
     const { error } = schema.validate(req.body);
     if (error) {

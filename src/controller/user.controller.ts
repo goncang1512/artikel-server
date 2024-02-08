@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
 import UserModel from '../models/users.models'
 import cloudinary from '../utils/cloudinary'
+import PosterModel from '../models/content.models'
+import { logger } from '../utils/logger'
 
 interface PostUser {
   username: string
@@ -112,7 +114,20 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
 
   try {
     const user = await getUserImg(_id)
+    const contents: any = await PosterModel.find({ user_id: _id })
 
+    for (const content of contents) {
+      await cloudinary.uploader
+        .destroy(content?.imgContent?.public_id)
+        .then(() => {
+          logger.info('Success delete all content user')
+        })
+        .catch(() => {
+          logger.info('Failed delete all content user')
+        })
+    }
+
+    await PosterModel.deleteMany({ user_id: _id })
     const imgId: any = user?.imgProfil?.public_id
     await cloudinary.uploader.destroy(imgId)
 

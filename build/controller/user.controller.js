@@ -17,8 +17,7 @@ const user_services_1 = require("../services/user.services");
 const uuid_1 = require("uuid");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const users_models_1 = __importDefault(require("../models/users.models"));
-const fs_1 = __importDefault(require("fs"));
-const content_models_1 = __importDefault(require("../models/content.models"));
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
 const getUserAll = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield (0, user_services_1.getUser)();
@@ -45,8 +44,9 @@ exports.getDetailUser = getDetailUser;
 const createAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, email, password } = req.body;
-        const fileName = 'default-fotoprofil.png';
-        const urlProfil = `${req.protocol}://${req.get('host')}/public/profil/${fileName}`;
+        const fileCloud = req.cloudFile;
+        const urlProfil = fileCloud.secure_url;
+        const fileName = fileCloud.public_id;
         const user_id = (0, uuid_1.v4)();
         const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
         const data = {
@@ -55,8 +55,10 @@ const createAccount = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             email,
             password: hashedPassword,
             refreshToken: null,
-            imgProfil: fileName,
-            profilUrl: urlProfil
+            imgProfil: {
+                public_id: fileName,
+                urlProfil
+            }
         };
         const result = yield (0, user_services_1.postAccount)(data);
         res.status(201).json({ status: true, statusCode: 201, message: 'Success create user', result });
@@ -71,8 +73,9 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     const { id } = req.params;
     const { username, email, password } = req.body;
     const user = yield users_models_1.default.findById(id);
-    const fileName = req.filename;
-    const urlProfil = `${req.protocol}://${req.get('host')}/public/profil/${fileName}`;
+    const fileCloud = req.cloudFile;
+    const fileName = fileCloud.public_id;
+    const urlProfil = fileCloud.secure_url;
     let newPassword;
     if (password === undefined || password === null || password === '') {
         newPassword = user === null || user === void 0 ? void 0 : user.password;
@@ -86,9 +89,10 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             username,
             email,
             password: newPassword,
-            imgProfil: fileName,
-            profilUrl: urlProfil,
-            refreshToken: null
+            imgProfil: {
+                public_id: fileName,
+                urlProfil
+            }
         });
         res.status(201).json({ status: true, statusCode: 201, message: 'Success updated user', result });
         next();
@@ -99,21 +103,12 @@ const updateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.updateUser = updateUser;
 const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const _id = req.params.id;
     try {
         const user = yield (0, user_services_1.getUserImg)(_id);
-        const contents = yield content_models_1.default.find({ user_id: user === null || user === void 0 ? void 0 : user._id });
-        for (const content of contents) {
-            const filepath = `./public/poster/${content.imgPoster}`;
-            if (fs_1.default.existsSync(filepath)) {
-                fs_1.default.unlinkSync(filepath);
-            }
-        }
-        yield content_models_1.default.deleteMany({ user_id: user === null || user === void 0 ? void 0 : user._id });
-        const filepath = `./public/profil/${user === null || user === void 0 ? void 0 : user.imgProfil}`;
-        if (fs_1.default.existsSync(filepath) && filepath !== './public/profil/default-fotoprofil.png') {
-            fs_1.default.unlinkSync(filepath);
-        }
+        const imgId = (_a = user === null || user === void 0 ? void 0 : user.imgProfil) === null || _a === void 0 ? void 0 : _a.public_id;
+        yield cloudinary_1.default.uploader.destroy(imgId);
         const result = yield (0, user_services_1.deleteAccount)(_id);
         res.status(200).json({ status: true, statusCode: 200, message: 'Success delete user', result });
         next();

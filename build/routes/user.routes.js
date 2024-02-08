@@ -13,14 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRouter = void 0;
-const express_1 = require("express");
 const logger_1 = require("../utils/logger");
 const user_controller_1 = require("../controller/user.controller");
 const validation_1 = require("../middleware/validation");
 const user_check_1 = require("../middleware/user.check");
-const profil_upload_1 = require("../middleware/profil.upload");
-const user_services_1 = require("../services/user.services");
-const content_models_1 = __importDefault(require("../models/content.models"));
+const express_1 = require("express");
+const cloudinary_1 = __importDefault(require("../utils/cloudinary"));
+const uploadMulter_1 = require("../middleware/uploadMulter");
 exports.UserRouter = (0, express_1.Router)();
 exports.UserRouter.get('/users', user_controller_1.getUserAll, () => {
     logger_1.logger.info('Success get user data');
@@ -28,18 +27,25 @@ exports.UserRouter.get('/users', user_controller_1.getUserAll, () => {
 exports.UserRouter.get('/users/:userId', user_controller_1.getDetailUser, () => {
     logger_1.logger.info('Success get user data');
 });
-exports.UserRouter.post('/users', validation_1.createUserValidation, user_check_1.checkUser, user_controller_1.createAccount, () => {
+exports.UserRouter.post('/users', validation_1.createUserValidation, user_check_1.checkUser, uploadMulter_1.uploadFile, user_controller_1.createAccount, () => {
     logger_1.logger.info('Success create user data');
 });
-exports.UserRouter.patch('/users/:id', validation_1.updateValidateUser, user_check_1.chekcUpdateUser, profil_upload_1.updateUserImg, user_controller_1.updateUser, () => {
+exports.UserRouter.patch('/users/:id', validation_1.updateValidateUser, user_check_1.chekcUpdateUser, uploadMulter_1.updateUploadFile, user_controller_1.updateUser, () => {
     logger_1.logger.info('Success updated user data');
 });
 exports.UserRouter.delete('/users/:id', user_controller_1.deleteUser, () => {
     logger_1.logger.info('Success deleted user data');
 });
-exports.UserRouter.get('/my/:id', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield (0, user_services_1.getUserImg)(req.params.id);
-    const contents = yield content_models_1.default.find({ user_id: user === null || user === void 0 ? void 0 : user._id });
-    res.json({ contents });
+exports.UserRouter.post('/upload', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const profil = req.body.profil;
+    try {
+        const result = yield cloudinary_1.default.uploader.upload(profil, { folder: 'profil' });
+        console.log(result);
+        logger_1.logger.info('Success upload img');
+        res.status(200).json({ messgae: 'Success', data: result });
+    }
+    catch (error) {
+        res.status(500).json({ messgae: 'Error upload', Error: error });
+    }
 }));
 //# sourceMappingURL=user.routes.js.map
