@@ -34,7 +34,8 @@ export const loginAuth = async (req: Request, res: Response, next: NextFunction)
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      secure: true
+      secure: true,
+      sameSite: 'none'
     })
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success login', accessToken })
