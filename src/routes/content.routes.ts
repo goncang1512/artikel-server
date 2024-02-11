@@ -30,7 +30,7 @@ ContentRouter.delete('/content/:id', deleteContent, () => {
   logger.info('Success deleted content')
 })
 
-ContentRouter.get('/content/search', getContentQuery, () => {
+ContentRouter.get('/search/content', getContentQuery, () => {
   logger.info('Success get content by query')
 })
 

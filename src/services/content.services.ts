@@ -1,4 +1,3 @@
-import { ParsedQs } from 'qs'
 import PosterModel from '../models/content.models'
 import { ContentType } from '../utils/DataTypes.type'
 
@@ -30,11 +29,4 @@ export const findContent = async (id: string) => {
 
 export const destroyContent = async (id: string) => {
   return await PosterModel.findByIdAndDelete({ _id: id })
-}
-
-export const searchContent = async (title: string | string[] | ParsedQs | ParsedQs[] | undefined) => {
-  return await PosterModel.find({ title: { $regex: title } }).populate(
-    'user',
-    'user_id username email imgProfil profilUrl createdAt'
-  )
 }

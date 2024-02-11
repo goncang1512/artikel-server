@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { postContent, getContent, patchContent, destroyContent, searchContent } from '../services/content.services'
+import { postContent, getContent, patchContent, destroyContent } from '../services/content.services'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentType } from '../utils/DataTypes.type'
 import PosterModel from '../models/content.models'
@@ -90,14 +90,21 @@ export const deleteContent = async (req: Request, res: Response, next: NextFunct
 
 export const getContentQuery = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { content } = req.query
+    const { title }: any = req.query
 
-    const result = await searchContent(content)
+    const result = await PosterModel.find({ tittle: { $regex: title, $options: 'i' } }).populate(
+      'user',
+      'user_id username email imgProfil profilUrl createdAt'
+    )
+
+    if (result.length === 0) {
+      return res.status(404).json({ status: false, statusCode: 404, message: `Tidak ada content "${title}"` })
+    }
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success get content', result })
     next()
   } catch (error) {
-    res.status(400).json({ status: false, statusCode: 400, message: 'failed get content' })
+    res.status(404).json({ status: false, statusCode: 404, message: 'failed get content' })
   }
 }
 
