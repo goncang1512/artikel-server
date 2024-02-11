@@ -2,11 +2,13 @@ import { Application, Router } from 'express'
 import { UserRouter } from './user.routes'
 import { ContentRouter } from './content.routes'
 import { AuthRouter } from './auth.routes'
+import { CommentRouter } from './comments.routes'
 
 const _routes: Array<[string, Router]> = [
   ['/api', UserRouter],
   ['/api', ContentRouter],
-  ['/api', AuthRouter]
+  ['/api', AuthRouter],
+  ['/api', CommentRouter]
 ]
 
 export const routes = (app: Application) => {
