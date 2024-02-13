@@ -5,6 +5,11 @@ import CommentModel from '../models/comment.models'
 export const postComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { comment } = req.body
+
+    if (comment === '' || comment === null) {
+      return res.status(422).json({ status: false, statusCode: 422, message: 'Kolom komentar tidak boleh kosong' })
+    }
+
     const { userId, contentId } = req.params
     const data = {
       comment_id: uuidv4(),
