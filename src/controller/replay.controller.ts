@@ -33,10 +33,9 @@ export const postReplayComment = async (req: Request, res: Response, next: NextF
 
 export const getReplayComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await ReplayModel.find({ comment_id: req.params.id }).populate(
-      'user',
-      '_id user_id username email imgProfil createdAt'
-    )
+    const result = await ReplayModel.find({ comment_id: req.params.id })
+      .populate('user', '_id user_id username email imgProfil createdAt')
+      .sort({ createdAt: -1 })
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success get replay comment', result })
     next()
