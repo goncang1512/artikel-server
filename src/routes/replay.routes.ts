@@ -1,5 +1,5 @@
 import { logger } from '../utils/logger'
-import { postReplayComment, getReplayComment, deleteReplayComment } from '../controller/replay.controller'
+import { postReplayComment, getReplayComment, deleteReplayComment, getAllReplay } from '../controller/replay.controller'
 import { Router } from 'express'
 
 export const ReplayRouter: Router = Router()
@@ -14,4 +14,8 @@ ReplayRouter.get('/replay/:id', getReplayComment, () => {
 
 ReplayRouter.delete('/replay/:id', deleteReplayComment, () => {
   logger.info('Success deleted replay')
+})
+
+ReplayRouter.get('/replay', getAllReplay, () => {
+  logger.info('Success get all replay')
 })

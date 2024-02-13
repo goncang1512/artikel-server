@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { ContentType } from '../utils/DataTypes.type'
 import PosterModel from '../models/content.models'
 import cloudinary from '../utils/cloudinary'
+import CommentModel from '../models/comment.models'
+import ReplayModel from '../models/replay.models'
 
 interface CustomRequest extends Request {
   cloudFile?: any
@@ -75,10 +77,13 @@ export const updateContent = async (req: CustomRequest, res: Response, next: Nex
 export const deleteContent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const content = await PosterModel.findById(req.params.id)
+    const comment: any = await CommentModel.find({ content_id: req.params.id })
 
     const imgId: any = content?.imgContent?.public_id
     await cloudinary.uploader.destroy(imgId)
 
+    await ReplayModel.deleteMany({ comment_id: comment._id })
+    await CommentModel.deleteMany({ content_id: req.params.id })
     await destroyContent(req.params.id)
 
     res.status(204).json({ status: true, statusCode: 204, message: 'Success deleted content', result: content })

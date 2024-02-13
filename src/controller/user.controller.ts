@@ -6,6 +6,8 @@ import UserModel from '../models/users.models'
 import cloudinary from '../utils/cloudinary'
 import PosterModel from '../models/content.models'
 import { logger } from '../utils/logger'
+import CommentModel from '../models/comment.models'
+import ReplayModel from '../models/replay.models'
 
 interface PostUser {
   username: string
@@ -115,6 +117,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
   try {
     const user = await getUserImg(_id)
     const contents: any = await PosterModel.find({ user_id: _id })
+    const comment: any = await CommentModel.find({ content_id: _id })
 
     for (const content of contents) {
       await cloudinary.uploader
@@ -127,6 +130,10 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
         })
     }
 
+    await ReplayModel.deleteMany({ comment_id: comment._id })
+    await ReplayModel.deleteMany({ user_id: _id })
+    await CommentModel.deleteMany({ content_id: contents._id })
+    await CommentModel.deleteMany({ user_id: _id })
     await PosterModel.deleteMany({ user_id: _id })
     const imgId: any = user?.imgProfil?.public_id
     await cloudinary.uploader.destroy(imgId)

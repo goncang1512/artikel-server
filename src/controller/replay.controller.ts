@@ -56,3 +56,14 @@ export const deleteReplayComment = async (req: Request, res: Response, next: Nex
     res.status(500).json({ status: false, statusCode: 500, message: 'Failed deleted replay comment' })
   }
 }
+
+export const getAllReplay = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await ReplayModel.find()
+
+    res.status(200).json({ status: true, statusCode: 200, message: 'Success get replay comment', result })
+    next()
+  } catch (error) {
+    res.status(404).json({ status: false, statusCode: 404, message: 'Filed get replay comment' })
+  }
+}

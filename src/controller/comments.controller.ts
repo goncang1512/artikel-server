@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import CommentModel from '../models/comment.models'
+import ReplayModel from '../models/replay.models'
 
 export const postComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,6 +60,7 @@ export const getCommentContent = async (req: Request, res: Response, next: NextF
 export const deleteComment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
+    await ReplayModel.deleteMany({ comment_id: id })
     await CommentModel.findByIdAndDelete({ _id: id })
     res.status(200).json({ status: true, statusCode: 200, message: 'Success delete comment', result: id })
   } catch (error) {
