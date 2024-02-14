@@ -135,6 +135,7 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
     await CommentModel.deleteMany({ content_id: contents._id })
     await CommentModel.deleteMany({ user_id: _id })
     await PosterModel.deleteMany({ user_id: _id })
+
     const imgId: any = user?.imgProfil?.public_id
     await cloudinary.uploader.destroy(imgId)
 
