@@ -10,7 +10,10 @@ export const postContent = async (payload: ContentType) => {
 }
 
 export const getContent = async () => {
-  return await PosterModel.find().populate('user', '_id user_id username email imgProfil').sort({ createdAt: -1 })
+  return await PosterModel.find()
+    .populate('user', '_id user_id username email imgProfil')
+    .populate('mading', '_id mading_id nameMading statusMading createdAt updatedAt')
+    .sort({ createdAt: -1 })
 }
 
 export const patchContent = async (id: string, payload: ContentType) => {

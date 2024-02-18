@@ -1,25 +1,26 @@
 import { Request, Response, NextFunction } from 'express'
-import { postContent, getContent, patchContent, destroyContent } from '../services/content.services'
+import { getContent, patchContent, destroyContent } from '../services/content.services'
 import { v4 as uuidv4 } from 'uuid'
 import { ContentType } from '../utils/DataTypes.type'
 import PosterModel from '../models/content.models'
 import cloudinary from '../utils/cloudinary'
 import CommentModel from '../models/comment.models'
 import ReplayModel from '../models/replay.models'
+import MadingModel from '../models/mading.models'
 
 interface CustomRequest extends Request {
   cloudFile?: any
 }
 
 export const uplaodContent = async (req: CustomRequest, res: Response, next: NextFunction) => {
-  const { tittle, description } = req.body
+  const { tittle, description, madingId } = req.body
   const { id } = req.params
   const content_id = uuidv4()
   const fileCloud = req.cloudFile
   const urlContent = fileCloud.secure_url
   const fileName = fileCloud.public_id
   try {
-    const result = await postContent({
+    const result = await PosterModel.create({
       content_id,
       tittle,
       description,
@@ -28,7 +29,9 @@ export const uplaodContent = async (req: CustomRequest, res: Response, next: Nex
         urlContent
       },
       user_id: id,
-      user: id
+      mading_id: madingId,
+      user: id,
+      mading: madingId
     })
 
     res.status(201).json({ status: true, statusCode: 201, message: 'Success created content', result })
@@ -47,7 +50,7 @@ export const getContentUser = async (req: Request, res: Response, next: NextFunc
     next()
   } catch (error) {
     console.log(error)
-    res.status(404).json({ status: false, statusCode: 404, message: 'Failed get content' })
+    res.status(404).json({ status: false, statusCode: 404, message: 'Failed get content', error })
   }
 }
 
@@ -102,11 +105,13 @@ export const getContentQuery = async (req: Request, res: Response, next: NextFun
       'user_id username email imgProfil profilUrl createdAt'
     )
 
-    if (result.length === 0) {
+    const mading = await MadingModel.find({ nameMading: { $regex: title, $options: 'i' } })
+
+    if (result.length === 0 && mading.length === 0) {
       return res.status(404).json({ status: false, statusCode: 404, message: `Tidak ada content "${title}"` })
     }
 
-    res.status(200).json({ status: true, statusCode: 200, message: 'Success get content', result })
+    res.status(200).json({ status: true, statusCode: 200, message: 'Success get content', result, mading })
     next()
   } catch (error) {
     res.status(404).json({ status: false, statusCode: 404, message: 'failed get content' })
@@ -138,5 +143,19 @@ export const getContentByIdContent = async (req: Request, res: Response, next: N
     next()
   } catch (error) {
     res.status(404).json({ status: false, statusCode: 404, message: 'failed get content' })
+  }
+}
+
+export const getContentMading = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await PosterModel.find({ mading_id: req.params.id })
+      .populate('user', 'user_id username email imgProfil profilUrl createdAt')
+      .populate('mading', '_id mading_id nameMading statusMading createdAt updatedAt')
+      .sort({ updatedAt: -1 })
+
+    res.status(200).json({ status: true, statusCode: 200, message: 'Success get content mading', result })
+    next()
+  } catch (error) {
+    res.status(404).json({ status: false, statusCode: 404, message: 'Failed get content mading', error })
   }
 }

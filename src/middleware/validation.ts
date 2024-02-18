@@ -7,6 +7,7 @@ export const createContentValidation = (req: Request, res: Response, next: NextF
   const schema = Joi.object({
     tittle: Joi.string().required().max(50).empty(''),
     description: Joi.string().required().empty(''),
+    madingId: Joi.string().required().empty(''),
     imgContent: Joi.allow()
   })
 

@@ -7,7 +7,8 @@ import {
   deleteContent,
   getContentQuery,
   getContentById,
-  getContentByIdContent
+  getContentByIdContent,
+  getContentMading
 } from '../controller/content.controller'
 import { createContentValidation, updateContentValidation } from '../middleware/validation'
 import { uploadContent, updateContentFile } from '../middleware/uploadContent.upload'
@@ -40,4 +41,8 @@ ContentRouter.get('/content/:id', getContentById, () => {
 
 ContentRouter.get('/mycontent/:id', getContentByIdContent, () => {
   logger.info('Success get content by id content')
+})
+
+ContentRouter.get('/contentmading/:id', getContentMading, () => {
+  logger.info('Success get content mading')
 })

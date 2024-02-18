@@ -4,13 +4,15 @@ import { ContentRouter } from './content.routes'
 import { AuthRouter } from './auth.routes'
 import { CommentRouter } from './comments.routes'
 import { ReplayRouter } from './replay.routes'
+import { MadingRouter } from './mading.routes'
 
 const _routes: Array<[string, Router]> = [
   ['/api', UserRouter],
   ['/api', ContentRouter],
   ['/api', AuthRouter],
   ['/api', CommentRouter],
-  ['/api', ReplayRouter]
+  ['/api', ReplayRouter],
+  ['/api', MadingRouter]
 ]
 
 export const routes = (app: Application) => {
