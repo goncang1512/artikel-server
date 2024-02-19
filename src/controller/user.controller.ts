@@ -15,6 +15,7 @@ interface PostUser {
   password: string
   user_id: string
   refreshToken: string | null
+  role: string
   imgProfil: {
     public_id: string
     urlProfil: string
@@ -51,7 +52,7 @@ export const getDetailUser = async (req: Request, res: Response, next: NextFunct
 
 export const createAccount = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {
-    const { username, email, password }: PostUser = req.body
+    const { username, email, password, role }: PostUser = req.body
     const fileCloud = req.cloudFile
     const urlProfil = fileCloud.secure_url
     const fileName = fileCloud.public_id
@@ -63,6 +64,7 @@ export const createAccount = async (req: CustomRequest, res: Response, next: Nex
       email,
       password: hashedPassword,
       refreshToken: null,
+      role,
       imgProfil: {
         public_id: fileName,
         urlProfil

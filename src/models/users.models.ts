@@ -19,6 +19,9 @@ const usersSchema = new mongoose.Schema(
       public_id: { type: String },
       urlProfil: { type: String }
     },
+    role: {
+      type: String
+    },
     refreshToken: {
       type: String
     }

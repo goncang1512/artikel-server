@@ -78,6 +78,7 @@ export const createUserValidation = (req: Request, res: Response, next: NextFunc
     email: Joi.string().required().empty(''),
     password: Joi.string().required().empty(''),
     confPassword: Joi.string().required().empty(''),
+    role: Joi.string().required().empty(''),
     imgProfil: Joi.allow()
   })
 

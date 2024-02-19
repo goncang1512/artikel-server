@@ -15,7 +15,7 @@ interface UserType {
 
 export const getUser = async () => {
   try {
-    return await UserModel.find({}, 'user_id username email imgProfil profilUrl refreshToken createdAt')
+    return await UserModel.find({}, 'user_id username email imgProfil refreshToken createdAt')
   } catch (error) {
     logger.info('cannot get data from db')
     return error
@@ -24,7 +24,7 @@ export const getUser = async () => {
 
 export const getUserById = async (id: string) => {
   try {
-    return await UserModel.findById(id, 'user_id username email imgProfil profilUrl refreshToken createdAt')
+    return await UserModel.findById(id, 'user_id username email imgProfil role refreshToken createdAt')
   } catch (error) {
     return error
   }
