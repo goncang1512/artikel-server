@@ -81,7 +81,7 @@ export const createAccount = async (req: CustomRequest, res: Response, next: Nex
 
 export const updateUser = async (req: CustomRequest, res: Response, next: NextFunction) => {
   const { id } = req.params
-  const { username, email, password }: PostUser = req.body
+  const { username, email, password, role }: PostUser = req.body
   const user = await UserModel.findById(id)
   const fileCloud = req.cloudFile
   const fileName = fileCloud.public_id
@@ -103,7 +103,8 @@ export const updateUser = async (req: CustomRequest, res: Response, next: NextFu
       imgProfil: {
         public_id: fileName,
         urlProfil
-      }
+      },
+      role
     })
 
     res.status(201).json({ status: true, statusCode: 201, message: 'Success updated user', result })

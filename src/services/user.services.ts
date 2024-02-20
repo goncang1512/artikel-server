@@ -6,6 +6,7 @@ interface UserType {
   email: string
   password?: any
   user_id?: string
+  role: string
   refreshToken?: string | null
   imgProfil: {
     public_id: any

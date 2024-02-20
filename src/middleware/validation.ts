@@ -112,6 +112,7 @@ export const updateValidateUser = (req: Request, res: Response, next: NextFuncti
     email: Joi.string().required().empty(''),
     password: Joi.string().allow().empty(''),
     confPassword: Joi.string().allow().empty(''),
+    role: Joi.string().required().empty(''),
     imgProfil: Joi.allow()
   })
 
