@@ -120,10 +120,9 @@ export const getContentQuery = async (req: Request, res: Response, next: NextFun
 
 export const getContentById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await PosterModel.find({ user_id: req.params.id }).populate(
-      'user',
-      'user_id username email imgProfil profilUrl createdAt'
-    )
+    const result = await PosterModel.find({ user_id: req.params.id })
+      .populate('user', 'user_id username email imgProfil profilUrl createdAt')
+      .populate('mading', '_id mading_id nameMading statusMading createdAt updatedAt')
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success get content', result })
     next()
