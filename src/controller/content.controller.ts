@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { getContent, patchContent, destroyContent } from '../services/content.services'
 import { v4 as uuidv4 } from 'uuid'
-import { ContentType } from '../utils/DataTypes.type'
 import PosterModel from '../models/content.models'
 import cloudinary from '../utils/cloudinary'
 import CommentModel from '../models/comment.models'
@@ -20,6 +19,7 @@ export const uplaodContent = async (req: CustomRequest, res: Response, next: Nex
   const urlContent = fileCloud.secure_url
   const fileName = fileCloud.public_id
   try {
+    const madingIdsArray = madingId.split(',').map((id: string) => id.trim())
     const result = await PosterModel.create({
       content_id,
       tittle,
@@ -29,9 +29,8 @@ export const uplaodContent = async (req: CustomRequest, res: Response, next: Nex
         urlContent
       },
       user_id: id,
-      mading_id: madingId,
       user: id,
-      mading: madingId
+      mading: madingIdsArray
     })
 
     res.status(201).json({ status: true, statusCode: 201, message: 'Success created content', result })
@@ -56,18 +55,20 @@ export const getContentUser = async (req: Request, res: Response, next: NextFunc
 
 export const updateContent = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {
-    const { tittle, description }: ContentType = req.body
+    const { tittle, description, mading } = req.body
     const { id } = req.params
     const fileCloud = req.cloudFile
     const fileName = fileCloud.public_id
     const urlContent = fileCloud.secure_url
+    const madingIdsArray = mading.split(',').map((id: string) => id.trim())
     const result = await patchContent(id, {
       tittle,
       description,
       imgContent: {
         public_id: fileName,
         urlContent
-      }
+      },
+      mading: madingIdsArray
     })
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success update content', result })
@@ -132,10 +133,9 @@ export const getContentById = async (req: Request, res: Response, next: NextFunc
 
 export const getContentByIdContent = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await PosterModel.findById(req.params.id).populate(
-      'user',
-      'user_id username email imgProfil profilUrl createdAt'
-    )
+    const result = await PosterModel.findById(req.params.id)
+      .populate('user', 'user_id username email imgProfil profilUrl createdAt')
+      .populate('mading', '_id nameMading statusMading createdAt updatedAt')
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success get content', result })
     next()
@@ -146,14 +146,21 @@ export const getContentByIdContent = async (req: Request, res: Response, next: N
 
 export const getContentMading = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await PosterModel.find({ mading_id: req.params.id })
-      .populate('user', 'user_id username email imgProfil profilUrl createdAt')
-      .populate('mading', '_id mading_id nameMading statusMading createdAt updatedAt')
-      .sort({ updatedAt: -1 })
+    const madingId = req.params.id
+
+    const content = await PosterModel.find()
+      .populate('user', '_id user_id username email imgProfil')
+      .populate('mading', '_id nameMading statusMading createdAt updatedAt')
+      .sort({ createdAt: -1 })
+
+    const result = content.filter((item) => {
+      return item.mading.some((mading) => String(mading._id) === madingId)
+    })
 
     res.status(200).json({ status: true, statusCode: 200, message: 'Success get content mading', result })
     next()
   } catch (error) {
+    console.error('Error while getting content for mading:', error)
     res.status(404).json({ status: false, statusCode: 404, message: 'Failed get content mading', error })
   }
 }

@@ -29,6 +29,7 @@ export interface ContentType {
     public_id: string
     urlContent: string
   }
+  mading: any
   user_id?: string
   user?: string
   cretedAt?: Date

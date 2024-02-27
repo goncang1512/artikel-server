@@ -16,16 +16,15 @@ const posterSchema = new mongoose.Schema(
       public_id: { type: String },
       urlContent: { type: String }
     },
-    mading_id: {
-      type: String
-    },
     user_id: {
       type: String
     },
-    mading: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'mading'
-    },
+    mading: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'mading'
+      }
+    ],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users'

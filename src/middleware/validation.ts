@@ -42,6 +42,7 @@ export const updateContentValidation = (req: Request, res: Response, next: NextF
   const schema = Joi.object({
     tittle: Joi.string().required().max(50).empty(''),
     description: Joi.string().required().empty(''),
+    mading: Joi.string().allow().empty(''),
     imgContent: Joi.allow()
   })
 
