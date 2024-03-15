@@ -16,6 +16,6 @@ LikesRoutes.get('/likes/:id', getLikesContent, () => {
   logger.info('success get likes')
 })
 
-LikesRoutes.delete('/likes/:id', disLikes, () => {
+LikesRoutes.delete('/likes/:likes_id', disLikes, () => {
   logger.info('success deleted likes content')
 })

@@ -3,8 +3,7 @@ import mongoose from 'mongoose'
 const likesSchema = new mongoose.Schema(
   {
     likes_id: {
-      type: String,
-      unique: true
+      type: String
     },
     content_id: {
       type: String

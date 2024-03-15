@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
 import LikesModel from '../models/likes.models'
-import { v4 as uuidv4 } from 'uuid'
 
 export const addLikes = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { user_id, content_id, userContent_id } = req.body
+    const { user_id, content_id, userContent_id, likes_id } = req.body
     const data = {
-      likes_id: uuidv4(),
+      likes_id,
       content_id,
       userContent_id,
       user_id,
@@ -46,7 +45,7 @@ export const getLikesContent = async (req: Request, res: Response, next: NextFun
 
 export const disLikes = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await LikesModel.findByIdAndDelete({ _id: req.params.id })
+    const result = await LikesModel.findOneAndDelete({ likes_id: req.params.likes_id })
     res.status(200).json({ status: true, statausCode: 200, message: 'Success deleted likes content', result })
     next()
   } catch (error) {
