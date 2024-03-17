@@ -6,6 +6,7 @@ import cloudinary from '../utils/cloudinary'
 import CommentModel from '../models/comment.models'
 import ReplayModel from '../models/replay.models'
 import MadingModel from '../models/mading.models'
+import LikesModel from '../models/likes.models'
 
 interface CustomRequest extends Request {
   cloudFile?: any
@@ -86,6 +87,7 @@ export const deleteContent = async (req: Request, res: Response, next: NextFunct
     const imgId: any = content?.imgContent?.public_id
     await cloudinary.uploader.destroy(imgId)
 
+    await LikesModel.deleteMany({ user_id: content?.user_id })
     await ReplayModel.deleteMany({ comment_id: comment._id })
     await CommentModel.deleteMany({ content_id: req.params.id })
     await destroyContent(req.params.id)

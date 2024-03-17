@@ -8,6 +8,8 @@ import PosterModel from '../models/content.models'
 import { logger } from '../utils/logger'
 import CommentModel from '../models/comment.models'
 import ReplayModel from '../models/replay.models'
+import LikesModel from '../models/likes.models'
+import FollowModel from '../models/follow.models'
 
 interface PostUser {
   username: string
@@ -133,6 +135,9 @@ export const deleteUser = async (req: Request, res: Response, next: NextFunction
         })
     }
 
+    await FollowModel.deleteMany({ user_id: _id })
+    await FollowModel.deleteMany({ follower_id: _id })
+    await LikesModel.deleteMany({ user_id: _id })
     await ReplayModel.deleteMany({ comment_id: comment._id })
     await ReplayModel.deleteMany({ user_id: _id })
     await CommentModel.deleteMany({ content_id: contents._id })
