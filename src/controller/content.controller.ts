@@ -87,7 +87,7 @@ export const deleteContent = async (req: Request, res: Response, next: NextFunct
     const imgId: any = content?.imgContent?.public_id
     await cloudinary.uploader.destroy(imgId)
 
-    await LikesModel.deleteMany({ user_id: content?.user_id })
+    await LikesModel.deleteMany({ content_id: content?._id })
     await ReplayModel.deleteMany({ comment_id: comment._id })
     await CommentModel.deleteMany({ content_id: req.params.id })
     await destroyContent(req.params.id)
