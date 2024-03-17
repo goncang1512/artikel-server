@@ -81,18 +81,20 @@ export const updateContent = async (req: CustomRequest, res: Response, next: Nex
 
 export const deleteContent = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const content = await PosterModel.findById(req.params.id)
-    const comment = await CommentModel.findOne({ content_id: req.params.id })
+    const contents = await PosterModel.findById(req.params.id)
+    const comments = await CommentModel.find({ content_id: req.params.id })
 
-    const imgId: any = content?.imgContent?.public_id
+    const imgId: any = contents?.imgContent?.public_id
     await cloudinary.uploader.destroy(imgId)
 
-    await ReplayModel.deleteMany({ comment_id: comment?._id })
-    await LikesModel.deleteMany({ content_id: content?._id })
+    for (const comment of comments) {
+      await ReplayModel.deleteMany({ comment_id: comment._id })
+    }
+    await LikesModel.deleteMany({ content_id: contents?._id })
     await CommentModel.deleteMany({ content_id: req.params.id })
     await destroyContent(req.params.id)
 
-    res.status(204).json({ status: true, statusCode: 204, message: 'Success deleted content', result: content })
+    res.status(204).json({ status: true, statusCode: 204, message: 'Success deleted content', result: contents })
     next()
   } catch (error) {
     res.status(404).json({ status: false, statusCode: 404, message: 'Failed deleted content' })
