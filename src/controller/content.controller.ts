@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import { getContent, patchContent, destroyContent } from '../services/content.services'
-import { v4 as uuidv4 } from 'uuid'
-import PosterModel from '../models/content.models'
-import cloudinary from '../utils/cloudinary'
-import CommentModel from '../models/comment.models'
-import ReplayModel from '../models/replay.models'
 import MadingModel from '../models/mading.models'
+import PosterModel from '../models/content.models'
+import CommentModel from '../models/comment.models'
+import { v4 as uuidv4 } from 'uuid'
+import cloudinary from '../utils/cloudinary'
+import ReplayModel from '../models/replay.models'
 import LikesModel from '../models/likes.models'
 
 interface CustomRequest extends Request {
@@ -82,13 +82,13 @@ export const updateContent = async (req: CustomRequest, res: Response, next: Nex
 export const deleteContent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const content = await PosterModel.findById(req.params.id)
-    const comment: any = await CommentModel.find({ content_id: req.params.id })
+    const comment = await CommentModel.findOne({ content_id: req.params.id })
 
     const imgId: any = content?.imgContent?.public_id
     await cloudinary.uploader.destroy(imgId)
 
+    await ReplayModel.deleteMany({ comment_id: comment?._id })
     await LikesModel.deleteMany({ content_id: content?._id })
-    await ReplayModel.deleteMany({ comment_id: comment._id })
     await CommentModel.deleteMany({ content_id: req.params.id })
     await destroyContent(req.params.id)
 

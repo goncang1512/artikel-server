@@ -12,7 +12,7 @@ import { resolve } from 'path'
 import './utils/connectDB'
 
 const app: Application = express()
-const port = process.env.SERVER_PORT_LISTEN ?? 5500
+const port = 3060
 dotenv.config()
 
 // parse body request
