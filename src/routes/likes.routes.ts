@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { logger } from '../utils/logger'
-import { addLikes, getLikes, getLikesContent, disLikes } from '../controller/likes.controller'
+import { addLikes, getLikes, getLikesContent, disLikes, getLikeUser } from '../controller/likes.controller'
 
 export const LikesRoutes: Router = Router()
 
@@ -18,4 +18,8 @@ LikesRoutes.get('/likes/:id', getLikesContent, () => {
 
 LikesRoutes.delete('/likes/:likes_id', disLikes, () => {
   logger.info('success deleted likes content')
+})
+
+LikesRoutes.get('/userlike/:id', getLikeUser, () => {
+  logger.info('Success get user like')
 })

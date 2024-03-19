@@ -52,3 +52,14 @@ export const disLikes = async (req: Request, res: Response, next: NextFunction) 
     res.status(400).json({ status: false, statusCode: 400, message: 'Failed delete likes content', error })
   }
 }
+
+export const getLikeUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await LikesModel.find({ userContent_id: req.params.id })
+
+    res.status(200).json({ status: true, statusCode: 200, message: 'Success get like user', result })
+    next()
+  } catch (error) {
+    res.status(400).json({ status: false, statusCode: 400, message: 'Failed get like user', error })
+  }
+}
