@@ -153,7 +153,7 @@ export const getContentMading = async (req: Request, res: Response, next: NextFu
     const madingId = req.params.id
 
     const content = await PosterModel.find()
-      .populate('user', '_id user_id username email imgProfil')
+      .populate('user', '_id user_id username email imgProfil createdAt')
       .populate('mading', '_id nameMading statusMading createdAt updatedAt')
       .sort({ createdAt: -1 })
 
